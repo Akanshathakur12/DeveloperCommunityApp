@@ -17,6 +17,16 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 @Table(name="response")
 public class Response {
 	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int respId;
+	
+	private String answer;
+	
+	
+	 @JsonFormat(pattern="dd-MM-yyyy")	
+	private Date respDate;
+	
 	public Response() {
 		super();
 	}
@@ -26,14 +36,6 @@ public class Response {
 		this.respDate=respDate;
 		this.respId=respId;
 	}
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private int respId;
-	
-	private String answer;
-	
-	@JsonFormat(pattern="yyyy-MM-dd")
-	private Date respDate;
 	
 	@OneToOne(targetEntity = Developer.class, cascade = CascadeType.MERGE)
 	@JoinColumn(name="rd_fk")
@@ -43,6 +45,12 @@ public class Response {
 	@JoinColumn(name="rf_fk")
 	private Feed feed;
 	
+	public Date getRespDate() {
+		return respDate;
+	}
+	public void setRespDate(Date respDate) {
+		this.respDate = respDate;
+	}
 	public Feed getFeed() {
 		return feed;
 	}
@@ -67,12 +75,5 @@ public class Response {
 	public void setAnswer(String answer) {
 		this.answer = answer;
 	}
-	public Date getRespDate() {
-		return respDate;
-	}
-	public void setRespDate(Date respDate) {
-		this.respDate = respDate;
-	}
-	
 	
 }

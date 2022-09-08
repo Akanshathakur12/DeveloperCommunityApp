@@ -33,8 +33,8 @@ public class DevcomApplication {
    @SuppressWarnings("deprecation")
     private ApiInfo apiInfo() {
         
-        return new ApiInfoBuilder().title("Demo Session")
-                .description("Demo Session")
+        return new ApiInfoBuilder().title("Developer community App")
+                .description("solving your queries")
                 .termsOfServiceUrl("http://abc.com")
                 .contact("abc@gmail.com").license("My License")
                 .licenseUrl("abc@gmail.com").version("1.0").build();

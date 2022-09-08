@@ -9,20 +9,23 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.devcom.entity.Response;
+import com.devcom.exception.ResponseNotFoundException;
 import com.devcom.repository.ResponseRepository;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class ResponseServiceImplTest {
 	
-	@Autowired 
+	@InjectMocks 
 	private ResponseServiceImpl responseService;
+	Response response = new Response("answering to question",new Date(),1);
+	
 	
 	@Mock
 	private ResponseRepository responseRepository;
@@ -30,34 +33,29 @@ class ResponseServiceImplTest {
 
 	@Test
 	void testAddResponse() {
-		Response response = new Response("answering to question",new Date(),1);
 		
 	when(responseRepository.save(response)).thenReturn(response);
 	assertEquals(response,responseRepository.save(response));	
 	}
 	
 
-
-
-//	@BeforeAll
-//     public static void setUP() {
-//		Response res= new Response("ans",new Date(),1);
-//	}
-
-//	@Test
-//	void testEditResponse() {
-//		
-//		Response res=responseRepository.getById(1).;
-//		res.setAnswer("changed");
-//		responseRepository.save(res);
-//		assertNotEquals("5000",responseRepository.findById(1).get().getAnswer());
-//		
-//	}
+	@Test
+	void testAddResponseN() throws ResponseNotFoundException {
+		when(responseRepository.save(response)).thenReturn(response);
+		try {
+	
+		assertEquals(response,responseRepository.save(response));
+		}
+		catch(ResponseNotFoundException e) {
+			assertEquals("Feed Not Found",e.getMessage());
+		}
+		
+	}
 
 	@Test
 	void testGetResponse() {
-		Response res= new Response("answering to question",new Date(),1);
-		Optional<Response> respOptional = Optional.of(res);
+		
+		Optional<Response> respOptional = Optional.of(response);
 		when(responseRepository.findById(1)).thenReturn(respOptional);
 		assertThat(responseService.getResponse(1)).isPresent();
 		

@@ -1,7 +1,5 @@
 package com.devcom.entity;
 
-
-
 import java.util.Date;
 
 import javax.persistence.CascadeType;
@@ -33,7 +31,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 		@GeneratedValue(strategy=GenerationType.IDENTITY)
 		int feedId;
 		String query;
-		@JsonFormat(pattern="dd-MM-yyyy")
+		 @JsonFormat(pattern="dd-MM-yyyy")
 		private Date feedDate;
 		String topic;
 		int relevance;
@@ -55,12 +53,6 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 		public void setFeedId(int feedId) {
 			this.feedId = feedId;
 		}
-		public Date getFeedDate() {
-			return feedDate;
-		}
-		public void setFeedDate(Date feedDate) {
-			this.feedDate = feedDate;
-		}
 		public String getQuery() {
 			return query;
 		}
@@ -76,6 +68,14 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 		public int getRelevance() {
 			return relevance;
 		}
+		public Date getFeedDate() {
+			return feedDate;
+		}
+
+		public void setFeedDate(Date feedDate) {
+			this.feedDate = feedDate;
+		}
+
 		public void setRelevance(int relevance) {
 			this.relevance = relevance;
 		}

@@ -5,6 +5,6 @@ import com.devcom.entity.User;
 
 public interface UserService {
 	public User registerUser(UserDTO userdto);
-
-
+	
+	public String loginUser(UserDTO userdto);
 }

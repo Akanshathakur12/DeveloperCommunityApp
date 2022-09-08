@@ -24,7 +24,11 @@ public class GlobalExceptionHandler {
 		
 		return new ResponseEntity<>("Developer Not Found",HttpStatus.NOT_FOUND);
 	}
-	
+	@ExceptionHandler(value=QueryExistsException.class)
+	public ResponseEntity<String> queryExistsExceptionHandler(QueryExistsException ex){
+		
+		return new ResponseEntity<>("Query already exists",HttpStatus.NOT_FOUND);
+	}
 	@ExceptionHandler(value=FeedNotFoundException.class)
 	public ResponseEntity<String> feedNotFoundExceptionHandler(FeedNotFoundException ex){
 		

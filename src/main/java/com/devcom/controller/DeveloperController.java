@@ -24,6 +24,7 @@ import com.devcom.exception.DeveloperExistsException;
 import com.devcom.exception.DeveloperNotFoundException;
 import com.devcom.exception.FeedNotFoundException;
 import com.devcom.exception.ResponseNotFoundException;
+import com.devcom.exception.UserNotFoundException;
 import com.devcom.repository.DeveloperRepository;
 import com.devcom.repository.FeedRepository;
 import com.devcom.repository.ResponseRepository;
@@ -40,97 +41,70 @@ public class DeveloperController {
 	
 	@Autowired
 	DeveloperRepository developerRepository;
+
+	@Autowired
+	ResponseService responseService;
 	
-	@PostMapping("/adddetails")
-	public ResponseEntity<String> addDeveloper(@RequestBody DeveloperDTO developerdto) {
-		Optional<Developer> opt = developerRepository.findByEmail(developerdto.getEmail());
-		if (opt.isPresent()) {
-			throw new DeveloperExistsException();
-		} else {
-			developerService.addDeveloper(developerdto);
-			return new ResponseEntity<>("Success", HttpStatus.OK);
-		}	
-	}
-	
-	@GetMapping("/getdetails/{devId}")
-	public Optional<Developer> getDeveloper(@PathVariable int devId ) {
-		Optional<Developer> opt = developerRepository.findById(devId);
-		if (opt.isEmpty()) {
-			throw new DeveloperNotFoundException();
-		} else {
-			return developerService.getDeveloper(devId);
-		}		
-	}
-	
-	@GetMapping("/alldetails")
-	public List<Developer> getAllDevelopers() {
-		return developerService.getAllDevelopers();
-	}
-	
-	@PutMapping("/editdetails/{devId}")
-	public ResponseEntity<Developer> editDeveloper(@PathVariable("devId") int devId, @RequestBody DeveloperDTO developerdto) {
-		Developer updateDev = developerService.editDeveloper(developerdto,devId);
-		return ResponseEntity.ok().body(updateDev);
-	}
-	
+	@Autowired
+	ResponseRepository responseRepository;
+
 	@Autowired
 	FeedService feedService;
 	
 	@Autowired
 	FeedRepository feedRepository;
 	
-	@PostMapping("/addfeed")
-	public ResponseEntity<String> addFeed(@RequestBody FeedDTO feeddto)
+	@PostMapping("/AddDetails")
+	public ResponseEntity<String> addDeveloper(@RequestBody DeveloperDTO developerDto) throws UserNotFoundException, DeveloperExistsException {
+			developerService.addDeveloper(developerDto);
+			return new ResponseEntity<>("Success", HttpStatus.OK);
+	}
+	
+	@GetMapping("/GetDetails/{devId}")
+	public Optional<Developer> getDeveloper(@PathVariable int devId ) throws DeveloperNotFoundException {
+			return developerService.getDeveloper(devId);	
+	}
+	
+	@GetMapping("/AllDetails")
+	public List<Developer> getAllDevelopers() {
+		return developerService.getAllDevelopers();
+	}
+	
+	@PutMapping("/EditDetails/{devId}")
+	public ResponseEntity<Developer> editDeveloper(@PathVariable("devId") int devId, @RequestBody DeveloperDTO developerDto) throws DeveloperNotFoundException {
+		Developer updateDev = developerService.editDeveloper(developerDto,devId);
+		return ResponseEntity.ok().body(updateDev);
+	}
+	
+	@PostMapping("/AddFeed")
+	public ResponseEntity<String> addFeed(@RequestBody FeedDTO feedDto) throws DeveloperNotFoundException
 	{
-		feedService.addFeed(feeddto);
+		feedService.addFeed(feedDto);
 		return new ResponseEntity<>("Feed added", HttpStatus.OK);
 	}
 	
-	@GetMapping("/getfeed/{feedid}")
-	public Optional<Feed> getFeed(@PathVariable int feedid ) {
-		Optional<Feed> opt = feedRepository.findById(feedid);
-		if (opt.isEmpty()) {
-			throw new FeedNotFoundException();
-		} else {
-			return feedService.getFeed(feedid);
-		}	
+	@GetMapping("/GetFeed/{feedId}")
+	public Optional<Feed> getFeed(@PathVariable int feedId ) throws FeedNotFoundException {
+		return feedService.getFeed(feedId);	
 	}
 	
-	@Autowired
-	ResponseService responseService;
-	
-	@Autowired
-	ResponseRepository responseRepository;
-	
-	@PostMapping("/addresponse")
-	public ResponseEntity<String> addResponse(@RequestBody ResponseDTO responsedto) {
-		Optional<Developer> developer = developerRepository.findById(responsedto.getDevId());
-		Optional<Feed> feed = feedRepository.findById(responsedto.getFeedId());	
-		if(developer.isEmpty()) {
-			throw new DeveloperNotFoundException();
-		}
-		if(feed.isEmpty()) {
-			throw new FeedNotFoundException();
-		}
-		responseService.addResponse(responsedto);
+	//.................RESPONSE CONTROLLER
+	@PostMapping("/AddResponse")
+	public ResponseEntity<String> addResponse(@RequestBody ResponseDTO responseDto) throws FeedNotFoundException, DeveloperNotFoundException {
+		responseService.addResponse(responseDto);
 		return new ResponseEntity<>("Response Added", HttpStatus.OK);
 		
 	}
 	
-	@PutMapping("/edit/{respId}")
-	public ResponseEntity<Response> editResponse(@PathVariable("respId") int respId,@RequestBody ResponseDTO responsedto) {
-		Response updateResp = responseService.editResponse(respId, responsedto);
+	@PutMapping("/EditResponse/{respId}")
+	public ResponseEntity<Response> editResponse(@PathVariable("respId") int respId,@RequestBody ResponseDTO responseDto) throws ResponseNotFoundException {
+		Response updateResp = responseService.editResponse(respId, responseDto);
 		return ResponseEntity.ok().body(updateResp);
 	}
 	
 
-	@GetMapping("/getresponse/{respid}")
-	public Optional<Response> getResponse(@PathVariable int respid ) {
-		Optional<Response> opt = responseRepository.findById(respid);
-		if (opt.isEmpty()) {
-			throw new ResponseNotFoundException();
-		} else {
-			return responseService.getResponse(respid);
-		}		
+	@GetMapping("/GetResponse/{respId}")
+	public Optional<Response> getResponse(@PathVariable int respId ) throws ResponseNotFoundException {
+		return responseService.getResponse(respId);	
 	}
 }

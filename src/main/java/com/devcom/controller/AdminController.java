@@ -1,7 +1,5 @@
 package com.devcom.controller;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,8 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.devcom.entity.Developer;
-import com.devcom.entity.Feed;
-import com.devcom.entity.Response;
 import com.devcom.exception.DeveloperNotFoundException;
 import com.devcom.exception.FeedNotFoundException;
 import com.devcom.exception.ResponseNotFoundException;
@@ -46,45 +42,28 @@ public class AdminController {
 	@Autowired
 	ResponseRepository responseRepository;
 	
-	@PutMapping("/blockdeveloper/{devId}")
-	public ResponseEntity<Developer> blockUser(@PathVariable("devId") int devId) {
-		Optional<Developer> opt = developerRepository.findById(devId);
-		if (opt.isEmpty()) {
-			throw new DeveloperNotFoundException();
-		}
-		Developer savestatus = developerService.blockUser(devId);
-		return ResponseEntity.ok().body(savestatus);
+	@PutMapping("/BlockDeveloper/{devId}")
+	public ResponseEntity<Developer> blockUser(@PathVariable("devId") int devId) throws DeveloperNotFoundException {
+		Developer saveStatus = developerService.blockUser(devId);
+		return ResponseEntity.ok().body(saveStatus);
 		}
 	
-	@PutMapping("/unblockdeveloper/{devId}")
-	public ResponseEntity<Developer> unblockUser(@PathVariable("devId") int devId) {
-		Optional<Developer> opt = developerRepository.findById(devId);
-		if (opt.isEmpty()) {
-			throw new DeveloperNotFoundException();
-		}
-		Developer savestatus = developerService.unblockUser(devId);
-		return ResponseEntity.ok().body(savestatus);
+	@PutMapping("/UnblockDeveloper/{devId}")
+	public ResponseEntity<Developer> unblockUser(@PathVariable("devId") int devId) throws DeveloperNotFoundException {
+		Developer saveStatus = developerService.unblockUser(devId);
+		return ResponseEntity.ok().body(saveStatus);
 		}
 	
-	@DeleteMapping("/deletefeed/{feedId}")
-	public ResponseEntity<String> removeFeed(@PathVariable("feedId") int feedId) {
-		Optional<Feed> opt = feedRepository.findById(feedId);
-		if(opt.isEmpty()) {
-			throw new FeedNotFoundException();
-		}else {
+	@DeleteMapping("/DeleteFeed/{feedId}")
+	public ResponseEntity<String> removeFeed(@PathVariable("feedId") int feedId) throws FeedNotFoundException {
 			feedService.removeFeed(feedId);
 			return new ResponseEntity<>("Feed Removed", HttpStatus.OK);
 		}
-	}
+
 	
-	@DeleteMapping("/deleteresponse/{respId}")
-	public ResponseEntity<String> removeResponse(@PathVariable( "respId") int respId) {
-	     
-		Optional<Response> opt = responseRepository.findById(respId);
-		if(opt.isEmpty()) {
-			throw new ResponseNotFoundException();
-		}else {
-			responseService.removeResponse(respId);
-			return new ResponseEntity<>("Response Removed", HttpStatus.OK);
-		}	}
+	@DeleteMapping("/DeleteResponse/{respId}")
+	public ResponseEntity<String> removeResponse(@PathVariable( "respId") int respId) throws ResponseNotFoundException {
+	     	responseService.removeResponse(respId);
+			return new ResponseEntity<>("Response Removed", HttpStatus.OK);	
+	}
 }
